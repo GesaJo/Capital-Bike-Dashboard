@@ -1,0 +1,85 @@
+
+* {
+  /* background-color:#ECEBE2; */
+  font-family: Arial, Helvetica, sans-serif;
+  color:#0F570C;
+}
+
+/* .grid-container1 {
+  display: grid;
+  grid-template-columns: 70% auto;
+  grid-gap: 30px;
+  background-color: #ECEBE2;
+} */
+
+/* .grid-container > div > div {
+  background-color: rgba(255, 255, 255, 0.8);
+} */
+
+.sidebyside {
+  display: flex;
+  /* grid-template-columns: 40% auto;
+  grid-gap: 20px; */
+  /* background-color: #FFD786; */
+}
+
+.input-line {
+    /* flex-grow: 1; */
+    border-radius: 5px;
+    background-color: #FFE4F4;
+    margin: 10px;
+    padding: 15px;
+}
+
+.radio-select {
+  margin-bottom: 10px;
+}
+
+.basic-container {
+  display: flex;
+  /* background-color: #9AAAFF; */
+}
+
+.mini_container {
+  border-radius: 5px;
+  background-color: #F2ECFF;
+  margin-top: 10px;
+  margin: 10px;
+  padding: 10px;
+  position: relative;
+  box-shadow: 2px 2px 2px lightgrey;
+}
+
+
+
+.one.column,
+ .one.columns                    { width: 8%;             }
+ .two.columns                    { width: 16.25%;         }
+ .three.columns                  { width: 22%;            }
+ .four.columns                   { width: 33%;            }
+ .five.columns                   { width: 39.3333333333%; }
+ .six.columns                    { width: 49.75%;          }
+ .seven.columns                  { width: 56.6666666667%; }
+ .eight.columns                  { width: 66.5%;          }
+ .nine.columns                   { width: 74.0%;          }
+ .ten.columns                    { width: 82.6666666667%; }
+ .eleven.columns                 { width: 91.5%; }
+ .twelve.columns                 { width: 100%; margin-left: 0; }
+
+ .one-third.column               { width: 30.6666666667%; }
+ .two-thirds.column              { width: 65.3333333333%; }
+
+ /* .one-half.column */
+
+ .pretty-container {
+   border-radius: 20px;
+   background-color: #E6F4F1;
+   margin: 10px;
+   padding: 15px;
+   position: relative;
+   box-shadow: 2px 2px 2px lightgrey;
+ }
+
+ /* .pretty_container basic-graph {
+   flex-grow: 2;
+ } */
