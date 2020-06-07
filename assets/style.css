@@ -80,6 +80,9 @@
    box-shadow: 2px 2px 2px lightgrey;
  }
 
+# check_single_day {
+    align-content: center;
+}
  /* .pretty_container basic-graph {
    flex-grow: 2;
  } */

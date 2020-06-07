@@ -34,10 +34,9 @@ app.layout = html.Div([
 
     ####### pretty container
         html.Div([
-                html.P(
-                    "Filter by month and (optional) by day, \
-                     default shows values for the whole year/month.",
-                    className="control_label",),
+                html.H4(
+                    "Filter by month, customer-status, weekday and single day",
+                    className="control_label"),
 
                 dcc.Dropdown(id='choose-month',
                     className="input-line",
@@ -45,37 +44,39 @@ app.layout = html.Div([
                     options=options_months_year,
                      value= 0.0),
 
-                html.P("Filter by customer status:", className="control_label"),
+                html.P("Customer status:", className="control_label"),
                 dcc.RadioItems(
                     id="customer-status-selector",
                     options=options_customers,
                     value="all",
                     labelStyle={"display": "inline-block"},
                     className="radio-select",),
-                html.P("Filter by weekday:", className="control_label"),
+                html.P("Weekday:", className="control_label"),
                 dcc.Dropdown(id='choose-weekday',
                     className="input-line",
                     style={"flex-grow":"2",},
                     options=options_days,
                     value= "all"),
-                html.P("Display single day:", className="control_label"),
-                dcc.RadioItems(
-                    id="check_single_day",
-                    options=[{"label": "Yes", 'value':'yes'},
-                            {"label": "No", 'value':'no'}],
-                    value='no'
-                ),
+
+
+                    html.P("Display single day:", className="control_label"),
+                    dcc.RadioItems(
+                        id="check_single_day",
+                        options=[{"label": "Yes", 'value':'yes'},
+                                {"label": "No", 'value':'no'}],
+                        value='no'),
+                
 
                 ##### Side by side
                 html.Div([
                     dcc.Dropdown(id='choose-day1',
                         className="input-line",
-                        # style={"flex-grow":"2",},
+                        style={"flex-grow":"1",},
                         options=options_days31,
-                         value= 1),
+                        value= 1),
                     dcc.Dropdown(id='choose-month1',
                         className="input-line",
-                        # style={"flex-grow":"2",},
+                        style={"flex-grow":"3",},
                         options=options_months,
                         value=1)
                 ], className="sidebyside"),
@@ -144,7 +145,7 @@ app.layout = html.Div([
             html.Div([
                 dcc.Dropdown(id='choose-month2',
                     className="input-line",
-                    style={"flex-grow":"2",},
+                    style={"flex-grow":"2"},
                     options=options_months_year,
                     value=1.0),
                 dcc.Input(id='choose-day2',

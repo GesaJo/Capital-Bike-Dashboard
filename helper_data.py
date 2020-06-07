@@ -3,6 +3,7 @@
 
 
 options_months_year = [
+    {'label': 'Whole year', 'value': 0},
     {'label': 'January', 'value': 1},
     {'label': 'February', 'value': 2},
     {'label': 'March', 'value': 3},
@@ -14,8 +15,7 @@ options_months_year = [
     {'label': 'September', 'value': 9},
     {'label': 'October', 'value': 10},
     {'label': 'November', 'value': 11},
-    {'label': 'December', 'value': 12},
-    {'label': 'Whole year', 'value': 0}]
+    {'label': 'December', 'value': 12}]
 
 options_months = [
     {'label': 'January', 'value': 1},
@@ -82,9 +82,10 @@ options_customers = [
 
 colors_weather = {"PRCP":"Darkmint",
         "TAVG": "BlueRed",
-        "SNOW": "Magenta",
+        # "SNOW": "Magenta",
         "AWND": "Blugrn",
-        "bad_weather": "matter"}
+        # "bad_weather": "matter"
+        }
 
 list_days = ["Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"]
