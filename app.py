@@ -6,9 +6,11 @@ import pandas as pd
 import plotly.graph_objs as go
 
 from helper_functions import df_customer, get_date, get_weekday
-from helper_functions import customer_stacked, customer_single, options_months
-from helper_functions import options_days, options_customers, colors
-from helper_functions import graph_week
+from helper_functions import months_stacked, months_single, graph_week
+from helper_functions import day_single, day_stacked
+from helper_data import options_days, options_customers, options_months_year
+from helper_data import options_days31, colors_weather, months_dict
+from helper_data import  options_months
 from sankey import gen_sankey
 
 
@@ -16,7 +18,6 @@ df = pd.read_csv('data/df_main.csv')
 df_loc = pd.read_csv("data/df_loc.csv")
 
 mapbox_access_token = "pk.eyJ1Ijoia2VzaSIsImEiOiJja2IxemUwdzkwNnZnMnhtYXZ5dnE2NHBtIn0.d5Xf1lZV009l1ubMrOAieQ"
-months_dict= {1:"Jan", 2:"Feb", 3:"Mar", 4:"Apr", 5:"May", 6:"Jun", 7:"Jul", 8:"Aug", 9:"Sep", 10:"Oct", 11:"Nov", 12:"Dec"}
 
 
 app = dash.Dash()
@@ -38,20 +39,11 @@ app.layout = html.Div([
                      default shows values for the whole year/month.",
                     className="control_label",),
 
-                ##### Side by side
-                html.Div([
-                    dcc.Dropdown(id='choose-month',
-                        className="input-line",
-                        style={"flex-grow":"2",},
-                        options=options_months,
-                         value= 0.0),
-                    dcc.Input(id='choose-day',
-                        className="input-line",
-                        style={"flex-grow":"1",},
-                        value=0, type='number',
-                        min=0, max=31, step=1,)
-                ], className="sidebyside"),
-                #### END Side by side
+                dcc.Dropdown(id='choose-month',
+                    className="input-line",
+                    style={"flex-grow":"2",},
+                    options=options_months_year,
+                     value= 0.0),
 
                 html.P("Filter by customer status:", className="control_label"),
                 dcc.RadioItems(
@@ -66,6 +58,28 @@ app.layout = html.Div([
                     style={"flex-grow":"2",},
                     options=options_days,
                     value= "all"),
+                html.P("Display single day:", className="control_label"),
+                dcc.RadioItems(
+                    id="check_single_day",
+                    options=[{"label": "Yes", 'value':'yes'},
+                            {"label": "No", 'value':'no'}],
+                    value='no'
+                ),
+
+                ##### Side by side
+                html.Div([
+                    dcc.Dropdown(id='choose-day1',
+                        className="input-line",
+                        # style={"flex-grow":"2",},
+                        options=options_days31,
+                         value= 1),
+                    dcc.Dropdown(id='choose-month1',
+                        className="input-line",
+                        # style={"flex-grow":"2",},
+                        options=options_months,
+                        value=1)
+                ], className="sidebyside"),
+                #### END Side by side
             ],
             className="pretty-container three columns",
             ),
@@ -131,7 +145,7 @@ app.layout = html.Div([
                 dcc.Dropdown(id='choose-month2',
                     className="input-line",
                     style={"flex-grow":"2",},
-                    options=options_months,
+                    options=options_months_year,
                     value=1.0),
                 dcc.Input(id='choose-day2',
                     className="input-line",
@@ -208,7 +222,7 @@ app.layout = html.Div([
                          dcc.Dropdown(id='choose-month-w',
                              className="input-line",
                              style={"flex-grow":"2",},
-                             options=options_months,
+                             options=options_months_year,
                              value=0)])
                     ],className="pretty-container five columns")
 
@@ -226,6 +240,53 @@ app.layout = html.Div([
 ###############################################################################
 
 
+
+@app.callback(
+    Output('basic-graph', 'figure'),
+    [Input('choose-month', 'value'),
+    Input('choose-weekday', 'value'),
+    Input('customer-status-selector', 'value'),
+    Input('check_single_day', 'value'),
+    Input('choose-day1', 'value'),
+    Input('choose-month1', 'value'),])
+def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
+    df, color1 = df_customer(df, customer)
+    color2 = color1
+    df = get_weekday(weekday, df)
+    if check == "yes":
+        if customer == "all":
+            v, w, x, y, color1, color2 = day_stacked(day1, month1, customer, df)
+        else:
+            v, w, x, y = day_single(day1, month1, df)
+    elif customer == "all":
+        v, w, x, y, color1, color2 = months_stacked(month, weekday, customer, df)
+    else:
+        v, w, x, y = months_single(month, weekday, df)
+
+    return {
+    "data":[{"type": "bar",
+            "x" : x,
+            "y" : y,
+            "marker":{"color": color1},
+            "name": "Members"},
+            {"type":"bar",
+            "x": v,
+            "y": w,
+            "marker": {"color": color2},
+            "name":"Casual riders"}],
+    "layout": dict(
+        barmode="stack",
+        autosize=True,
+        height=500,
+        font=dict(color="#191A1A"),
+        titlefont=dict(color="#191A1A", size='14'),
+        margin=dict(l=35,r=35,b=35,t=45),
+        hovermode="closest",
+        title="Number of rides per hour of the day",
+        plot_bgcolor='#fffcfc',
+        paper_bgcolor='#fffcfc',
+        legend=dict(font=dict(size=10), orientation='h'))
+    }
 
 
 
@@ -266,50 +327,6 @@ def update_map(month, customer, df=df):
 
 
 @app.callback(
-    Output('basic-graph', 'figure'),
-    [Input('choose-month', 'value'),
-    Input('choose-day', 'value'),
-    Input('choose-weekday', 'value'),
-    Input('customer-status-selector', 'value')])
-def update_basic_graph(month, day, weekday, customer, df=df):
-    df, color1 = df_customer(df, customer)
-    color2 = color1
-    df = get_weekday(weekday, df)
-    if customer == "all":
-        v, w, x, y = customer_stacked(month, day, weekday, customer, df)
-        color1 = "#0088D5"
-        color2= "#6CFBCE"
-    else:
-        v, w, x, y = customer_single(month, day, weekday, df)
-
-    return {
-    "data":[{"type": "bar",
-            "x" : x,
-            "y" : y,
-            "marker":{"color": color1},
-            "name": "Members"},
-            {"type":"bar",
-            "x": v,
-            "y": w,
-            "marker": {"color": color2},
-            "name":"Casual riders"}],
-    "layout": dict(
-        barmode="stack",
-        autosize=True,
-        height=500,
-        font=dict(color="#191A1A"),
-        titlefont=dict(color="#191A1A", size='14'),
-        margin=dict(l=35,r=35,b=35,t=45),
-        hovermode="closest",
-        title="Number of rides per hour of the day",
-        plot_bgcolor='#fffcfc',
-        paper_bgcolor='#fffcfc',
-        legend=dict(font=dict(size=10), orientation='h'))
-    }
-
-
-
-@app.callback(
     [Output('most_used_stations', 'children'),
     Output('most_used_address', 'children'),
     Output('number_bikes', 'children')],
@@ -331,7 +348,7 @@ def most_used_stations(month, day, customer, df=df, df_loc=df_loc):
 
 @app.callback(
     Output('sankey', 'figure'),
-    [Input('choose-day', 'value')])
+    [Input('choose-day1', 'value')])
 def draw_sankey(value):
     fig = gen_sankey()
     return fig
@@ -356,7 +373,7 @@ def weather_graph(weather, month, df=df):
             opacity=0.7,
             marker = dict(
                 color= df.groupby("day").mean()[weather],
-                colorscale= colors[weather],
+                colorscale= colors_weather[weather],
                 showscale=True,
                 size=10))
             ],
@@ -405,18 +422,6 @@ def weekday_graph(dummy):
                 "name": res[20]}
                 ],
 
-    # "data":[
-    #     go.Scatter(
-    #         x = df_weekday["hour"],
-    #         y = df_weekday["Duration"],
-    #         mode="lines",
-    #         # opacity=0.7,
-    #         marker = dict(
-    #             # color= df_weekday.groupby("day").mean()[weather],
-    #             # colorscale= colors[weather],
-    #             showscale=True,
-    #             size=10))
-    #         ],
     "layout": dict(
         xaxis={'title': 'Hour of day'},
         yaxis={'title': 'Number of rentals'},

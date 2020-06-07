@@ -1,47 +1,8 @@
 """helper functions and data"""
 import pandas as pd
+from helper_data import list_days
 
 df_weekday = pd.read_csv('data/df_weekday.csv')
-
-
-options_months = [
-    {'label': 'January', 'value': 1},
-    {'label': 'February', 'value': 2},
-    {'label': 'March', 'value': 3},
-    {'label': 'April', 'value': 4},
-    {'label': 'May', 'value': 5},
-    {'label': 'June', 'value': 6},
-    {'label': 'July', 'value': 7},
-    {'label': 'August', 'value': 8},
-    {'label': 'September', 'value': 9},
-    {'label': 'October', 'value': 10},
-    {'label': 'November', 'value': 11},
-    {'label': 'December', 'value': 12},
-    {'label': 'Whole year', 'value': 0}]
-
-options_days = [
-    {'label': 'Monday', 'value': 'Monday'},
-    {'label': 'Tuesday', 'value': 'Tuesday'},
-    {'label': 'Wednesday', 'value': 'Wednesday'},
-    {'label': 'Thursday', 'value': 'Thursday'},
-    {'label': 'Friday', 'value': 'Friday'},
-    {'label': 'Saturday', 'value': 'Saturday'},
-    {'label': 'Sunday', 'value': 'Sunday'}]
-
-list_days = ["Monday", "Tuesday", "Wednesday", "Thursday",
-            "Friday", "Saturday", "Sunday"]
-
-options_customers = [
-    {"label": "All ", "value": "all"},
-    {"label": "Members ", "value": "members"},
-    {"label": "Casual riders ", "value": "casual"}]
-
-
-colors = {"PRCP":"Darkmint",
-        "TAVG": "BlueRed",
-        "SNOW": "Magenta",
-        "AWND": "Blugrn",
-        "bad_weather": "matter"}
 
 
 def df_customer(df, customer):
@@ -56,38 +17,55 @@ def df_customer(df, customer):
     return df, color
 
 
-def customer_stacked(month, day, weekday, customer, df):
+def months_stacked(month, weekday, customer, df):
     x=df["hour"].unique()
     v=x
     if month == 0:
         w = df[df["Member type"]=="Casual"].groupby("hour").count()["day"]
         y = df[df["Member type"]=="Member"].groupby("hour").count()["day"]
-    elif day == 0:
-        w = df[(df["Member type"]=="Casual") & (df["month"]==month)].groupby("hour").count()["day"]
-        y = df[(df["Member type"]=="Member") & (df["month"]==month)].groupby("hour").count()["day"]
     else:
-        date= get_date(day, month, df)
-        w=df[(df["Member type"]=="Casual") & (df["day"]==date)].groupby("hour").count()["day"]
-        y = df[(df["Member type"]=="Member") & (df["day"]==date)].groupby("hour").count()["day"]
-    return v, w, x, y
+        w=df[(df["Member type"]=="Casual") & (df["month"]==month)].groupby("hour").count()["day"]
+        y = df[(df["Member type"]=="Member") & (df["month"]==month)].groupby("hour").count()["day"]
+    color1 = "#0088D5"
+    color2= "#6CFBCE"
+    return v, w, x, y, color1, color2
 
 
-
-def customer_single(month, day, weekday, df):
+def months_single(month, weekday, df):
     x=df["hour"].unique()
     v=0
     w=0
     if month == 0:
         x=df["hour"].unique()
         y=df.groupby("hour").count()["day"]
-    elif day == 0:
-        x=df["hour"].unique()
-        y=df[df["month"]==month].groupby("hour").count()["day"]
     else:
-        date= get_date(day, month, df)
         x=df["hour"].unique()
-        y=df[df["day"]== date].groupby("hour").count()["day"]
+        y=df[df["month"]== month].groupby("hour").count()["day"]
     return v, w, x, y
+
+
+def day_stacked(day, month, customer, df):
+
+    df = df[df["month"]==month]
+    date = get_date(day, month, df)
+    w = df[(df["Member type"]=="Casual") & (df["day"]==date)].groupby("hour").count()["day"]
+    y = df[(df["Member type"]=="Member") & (df["day"]==date)].groupby("hour").count()["day"]
+    x = df["hour"].unique()
+    v = x
+    color1 = "#0088D5"
+    color2= "#6CFBCE"
+    return v, w, x, y, color1, color2
+
+def day_single(day, month, df):
+
+    df = df[df["month"]==month]
+    date = get_date(day, month, df)
+    y = df[df["day"]==date].groupby("hour").count()["day"]
+    x = df["hour"].unique()
+    v = 0
+    w = 0
+    return v, w, x, y
+
 
 
 def get_date(day, month, df):
@@ -100,6 +78,8 @@ def get_date(day, month, df):
 
 
 def get_weekday(weekday, df):
+    """returns the dataframe filtered by given day"""
+
     if weekday == "Monday":
         df = df[df["weekday"]=="Monday"]
     elif weekday == "Tuesday":
@@ -118,8 +98,9 @@ def get_weekday(weekday, df):
         df = df
     return df
 
-def graph_week(df=df_weekday, list_days = list_days):
 
+def graph_week(df=df_weekday, list_days = list_days):
+    """Graph to return a list with data for plotting for each weekday"""
     list_results = []
     for day in list_days:
         list_results.append(df[df["weekday"]==day]["hour"])
