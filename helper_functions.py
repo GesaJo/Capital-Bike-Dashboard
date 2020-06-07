@@ -1,4 +1,8 @@
 """helper functions and data"""
+import pandas as pd
+
+df_weekday = pd.read_csv('data/df_weekday.csv')
+
 
 options_months = [
     {'label': 'January', 'value': 1},
@@ -23,6 +27,9 @@ options_days = [
     {'label': 'Friday', 'value': 'Friday'},
     {'label': 'Saturday', 'value': 'Saturday'},
     {'label': 'Sunday', 'value': 'Sunday'}]
+
+list_days = ["Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday", "Sunday"]
 
 options_customers = [
     {"label": "All ", "value": "all"},
@@ -110,3 +117,12 @@ def get_weekday(weekday, df):
     else:
         df = df
     return df
+
+def graph_week(df=df_weekday, list_days = list_days):
+
+    list_results = []
+    for day in list_days:
+        list_results.append(df[df["weekday"]==day]["hour"])
+        list_results.append(df[df["weekday"]==day].groupby("hour").sum()["Duration"])
+        list_results.append(day)
+    return list_results

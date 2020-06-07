@@ -8,11 +8,13 @@ import plotly.graph_objs as go
 from helper_functions import df_customer, get_date, get_weekday
 from helper_functions import customer_stacked, customer_single, options_months
 from helper_functions import options_days, options_customers, colors
+from helper_functions import graph_week
 from sankey import gen_sankey
 
 
 df = pd.read_csv('data/df_main.csv')
 df_loc = pd.read_csv("data/df_loc.csv")
+
 mapbox_access_token = "pk.eyJ1Ijoia2VzaSIsImEiOiJja2IxemUwdzkwNnZnMnhtYXZ5dnE2NHBtIn0.d5Xf1lZV009l1ubMrOAieQ"
 months_dict= {1:"Jan", 2:"Feb", 3:"Mar", 4:"Apr", 5:"May", 6:"Jun", 7:"Jul", 8:"Aug", 9:"Sep", 10:"Oct", 11:"Nov", 12:"Dec"}
 
@@ -168,40 +170,51 @@ app.layout = html.Div([
                             ], className = "pretty-container seven columns"),
 
             html.Div([
-                ### weather graph
-                    html.Div([
-                        dcc.Graph(id='weather-graph'),
-                        ],
-                        className="pretty-container"),
-                ### END weather graph
-
-                ####### pretty container
-                    html.Div([
-                            html.Div([
-                                html.P(
-                                    "Filter by month and see the impact of the weather",
-                                    className="control_label"),
-                                dcc.Dropdown(id='choose-weather',
-                                    className="input-line",
-                                    style={"flex-grow":"2",},
-                                    options=[{"label": "Temperature", "value": "TAVG"},
-                                            {"label":"Precipitation", "value":"PRCP"},
-                                            {"label":"Snow", "value":"SNOW"},
-                                            {"label":"Wind", "value":"AWND"},
-                                            {"label":"thunder, hail, fog", "value":"bad_weather"}],
-                                     value= "TAVG"),
-                                 dcc.Dropdown(id='choose-month-w',
-                                     className="input-line",
-                                     style={"flex-grow":"2",},
-                                     options=options_months,
-                                     value=0)])],
-                        )],className="pretty-container five columns")
-                ##### END pretty container
-
+                dcc.Graph(
+                    id="weekday-graph")
+                    ],className="pretty-container five columns")
             ],className="basic-container"),
 
         ### END basic container 3
 
+
+
+
+        #### basic container 4
+        html.Div([
+
+        ### weather graph
+            html.Div([
+                dcc.Graph(id='weather-graph')
+                ],
+                className="pretty-container"),
+        ### END weather graph
+
+        ####### pretty container
+            html.Div([
+                    html.Div([
+                        html.P(
+                            "Filter by month and see the impact of the weather",
+                            className="control_label"),
+                        dcc.Dropdown(id='choose-weather',
+                            className="input-line",
+                            style={"flex-grow":"2",},
+                            options=[{"label": "Temperature", "value": "TAVG"},
+                                    {"label":"Precipitation", "value":"PRCP"},
+                                    {"label":"Snow", "value":"SNOW"},
+                                    {"label":"Wind", "value":"AWND"},
+                                    {"label":"thunder, hail, fog", "value":"bad_weather"}],
+                             value= "TAVG"),
+                         dcc.Dropdown(id='choose-month-w',
+                             className="input-line",
+                             style={"flex-grow":"2",},
+                             options=options_months,
+                             value=0)])
+                    ],className="pretty-container five columns")
+
+        ##### END pretty container
+        ], className="basic-container")
+        ##### END basic container 4
 
     ])
 
@@ -362,6 +375,62 @@ def weather_graph(weather, month, df=df):
         legend=dict(font=dict(size=10), orientation='h'))
     }
 
+
+@app.callback(
+    Output('weekday-graph', 'figure'),
+    [Input('choose-weather', 'value')])
+def weekday_graph(dummy):
+    res  = graph_week()
+    return {
+        "data":[{"x" : res[0],
+                "y" : res[1],
+                "name": res[2]},
+                {"x": res[3],
+                "y": res[4],
+                "name": res[5] },
+                {"x": res[6],
+                "y": res[7],
+                "name":  res[8]},
+                {"x": res[9],
+                "y": res[10],
+                "name": res[11] },
+                {"x": res[12],
+                "y": res[13],
+                "name": res[14] },
+                {"x": res[15],
+                "y": res[16],
+                "name": res[17] },
+                {"x": res[18],
+                "y": res[19],
+                "name": res[20]}
+                ],
+
+    # "data":[
+    #     go.Scatter(
+    #         x = df_weekday["hour"],
+    #         y = df_weekday["Duration"],
+    #         mode="lines",
+    #         # opacity=0.7,
+    #         marker = dict(
+    #             # color= df_weekday.groupby("day").mean()[weather],
+    #             # colorscale= colors[weather],
+    #             showscale=True,
+    #             size=10))
+    #         ],
+    "layout": dict(
+        xaxis={'title': 'Hour of day'},
+        yaxis={'title': 'Number of rentals'},
+        autosize=True,
+        height=500,
+        font=dict(color="#191A1A"),
+        titlefont=dict(color="#191A1A", size='14'),
+        margin=dict(l=35,r=35,b=35,t=45),
+        hovermode="closest",
+        title="Weekdays, time and number of rentals",
+        plot_bgcolor='#fffcfc',
+        paper_bgcolor='#fffcfc',
+        legend=dict(font=dict(size=10), orientation='h'))
+    }
 
 
 
