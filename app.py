@@ -120,9 +120,9 @@ app.layout = html.Div([
 
             html.H5("Search for station by station-number:"),
             dcc.Input(id="map_single_station",
-                    debounce = True,
                     type="text",
-                    value="")
+                    placeholder = "Station number",
+                    debounce = True,)
                 ],
                 className="pretty-container nine columns",
             ),
@@ -265,16 +265,17 @@ app.layout = html.Div([
 def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
     df, color1 = df_customer(df, customer)
     color2 = color1
-    df = get_weekday(weekday, df)
     if check == "yes":
         if customer == "all":
             v, w, x, y, color1, color2 = day_stacked(day1, month1, customer, df)
         else:
             v, w, x, y = day_single(day1, month1, df)
     elif customer == "all":
-        v, w, x, y, color1, color2 = months_stacked(month, weekday, customer, df)
+        df_w = get_weekday(weekday, df)
+        v, w, x, y, color1, color2 = months_stacked(month, weekday, customer, df_w)
     else:
-        v, w, x, y = months_single(month, weekday, df)
+        df_w = get_weekday(weekday, df)
+        v, w, x, y = months_single(month, weekday, df_w)
 
     return {
     "data":[{"type": "bar",
@@ -311,10 +312,10 @@ def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
 def update_map(month, single_station, customer, df=df):
     map_data = df[df['month']==month]
     df_c, color = df_customer(map_data, customer)
-    if single_station == "":
-        single_station = 9999999
-    else:
+    try:
         single_station = int(single_station)
+    except (TypeError, ValueError):
+        single_station = 9999999
     if single_station in map_data["Start station number"]:
         lat = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LATITUDE']
         lon = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LONGITUDE']
