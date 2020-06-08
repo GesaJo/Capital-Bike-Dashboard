@@ -7,10 +7,11 @@ import plotly.graph_objs as go
 
 from helper_functions import df_customer, get_date, get_weekday
 from helper_functions import months_stacked, months_single, graph_week
-from helper_functions import day_single, day_stacked
+from helper_functions import day_single, day_stacked, graph_weather
+from helper_functions import get_station
 from helper_data import options_days, options_customers, options_months_year
 from helper_data import options_days31, colors_weather, months_dict
-from helper_data import  options_months
+from helper_data import  options_months, options_days_w
 from sankey import gen_sankey
 
 
@@ -65,7 +66,7 @@ app.layout = html.Div([
                         options=[{"label": "Yes", 'value':'yes'},
                                 {"label": "No", 'value':'no'}],
                         value='no'),
-                
+
 
                 ##### Side by side
                 html.Div([
@@ -115,7 +116,13 @@ app.layout = html.Div([
                 options=options_customers,
                 value="all",
                 labelStyle={"display": "inline-block"},
-                className="radio-select")
+                className="radio-select"),
+
+            html.H5("Search for station by station-number:"),
+            dcc.Input(id="map_single_station",
+                    debounce = True,
+                    type="text",
+                    value="")
                 ],
                 className="pretty-container nine columns",
             ),
@@ -124,20 +131,15 @@ app.layout = html.Div([
 
         #### most-used-box
         html.Div([
+            html.H3("Most used station per day/month"),
+            html.Div([
+                html.H4(id="most_used_stations"),
+                ], className="mini_container",
+            ),
 
             html.Div([
-                html.P("Station number:"),
-                html.H6(id="most_used_stations"),
-                ], className="mini_container",
-            ),
-            html.Div([
-                html.P("Adress:"),
-                html.H6(id="most_used_address"),
-                ], className="mini_container",
-            ),
-            html.Div([
-                html.P("Number of bikes rented per day/month:"),
-                html.H6(id="number_bikes"),
+                html.H5("Number of bikes rented per day/month:"),
+                html.H3(id="number_bikes"),
                 ], className="mini_container",
             ),
 
@@ -147,12 +149,12 @@ app.layout = html.Div([
                     className="input-line",
                     style={"flex-grow":"2"},
                     options=options_months_year,
-                    value=1.0),
-                dcc.Input(id='choose-day2',
+                    value=0),
+                dcc.Dropdown(id='choose-day2',
                     className="input-line",
-                    style={"flex-grow":"1",},
-                    value=0, type='number',
-                    min=0, max=31, step=1,)
+                    style={"flex-grow":"2",},
+                    options=options_days_w,
+                    value= 0),
             ], className="sidebyside"),
             #### END Side by side
 
@@ -194,38 +196,48 @@ app.layout = html.Div([
 
 
 
-
         #### basic container 4
         html.Div([
 
         ### weather graph
             html.Div([
-                dcc.Graph(id='weather-graph')
+                dcc.Graph(id='weather-graph'),
+                html.P(
+                    "Filter by month and see the impact of the weather",
+                    className="control_label"),
+                dcc.Dropdown(id='choose-weather',
+                    className="input-line",
+                    style={"flex-grow":"2",},
+                    options=[{"label": "Temperature", "value": "TAVG"},
+                            {"label":"Precipitation", "value":"PRCP"},
+                            {"label":"Windspeed", "value":"AWND"}],
+                     value= "TAVG"),
+                 dcc.Dropdown(id='choose-month-w',
+                     className="input-line",
+                     style={"flex-grow":"2",},
+                     options=options_months_year,
+                     value=0)
                 ],
-                className="pretty-container"),
+                className="pretty-container six columns"),
         ### END weather graph
 
         ####### pretty container
             html.Div([
                     html.Div([
                         html.P(
-                            "Filter by month and see the impact of the weather",
+                            "Weather-graph",
                             className="control_label"),
-                        dcc.Dropdown(id='choose-weather',
+                        dcc.Graph(id='weather2-graph'),
+                        dcc.Dropdown(id='choose-weather2',
                             className="input-line",
                             style={"flex-grow":"2",},
                             options=[{"label": "Temperature", "value": "TAVG"},
                                     {"label":"Precipitation", "value":"PRCP"},
-                                    {"label":"Snow", "value":"SNOW"},
-                                    {"label":"Wind", "value":"AWND"},
-                                    {"label":"thunder, hail, fog", "value":"bad_weather"}],
+                                    {"label":"Windspeed", "value":"AWND"}],
                              value= "TAVG"),
-                         dcc.Dropdown(id='choose-month-w',
-                             className="input-line",
-                             style={"flex-grow":"2",},
-                             options=options_months_year,
-                             value=0)])
-                    ],className="pretty-container five columns")
+                             ]
+                             )
+                    ],className="pretty-container six columns")
 
         ##### END pretty container
         ], className="basic-container")
@@ -294,20 +306,34 @@ def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
 @app.callback(
     Output('map-graph', 'figure'),
     [Input('month-slider', 'value'),
+    Input('map_single_station', 'value'),
     Input('customer-status-selector-map', 'value')])
-def update_map(month, customer, df=df):
-    df, color = df_customer(df, customer)
+def update_map(month, single_station, customer, df=df):
     map_data = df[df['month']==month]
+    df_c, color = df_customer(map_data, customer)
+    if single_station == "":
+        single_station = 9999999
+    else:
+        single_station = int(single_station)
+    if single_station in map_data["Start station number"]:
+        lat = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LATITUDE']
+        lon = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LONGITUDE']
+        m_size= df_c[df_c["Start station number"]==single_station].groupby("Start station number").count()["Duration"]/50
+    else:
+        lat = df_loc['LATITUDE']
+        lon = df_loc['LONGITUDE']
+        m_size= df_c.groupby("Start station number").count()["Duration"]/50
     return {
     "data":[
         {"type" : "scattermapbox",
-         "lat" : df_loc['LATITUDE'],
-         "lon" : df_loc['LONGITUDE'],
+         "lat" : lat,
+         "lon" : lon,
          "mode" : "markers",
-         "marker": {"size": map_data.groupby("Start station number").count()["Duration"]/50,
+         "marker": {"size": m_size,
+                    "sizemin":2,
                     "color": color,
                     "opacity":0.5},
-         "text": map_data.groupby('Start station number').count()['Duration']}],
+         "text": df_c.groupby('Start station number').count()['Duration']}],
     "layout": dict(
         autosize=True,
         height=500,
@@ -329,23 +355,16 @@ def update_map(month, customer, df=df):
 
 @app.callback(
     [Output('most_used_stations', 'children'),
-    Output('most_used_address', 'children'),
     Output('number_bikes', 'children')],
     [Input('choose-month2', 'value'),
     Input('choose-day2', 'value'),
     Input('customer-status-selector2', 'value')])
 def most_used_stations(month, day, customer, df=df, df_loc=df_loc):
     df, _ = df_customer(df, customer)
-    if day == 0:
-        station_no = df[df["month"]==month].groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
-        no_bikes = df[df["month"]==month].groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
-    else:
-        date = get_date(day, month, df)
-        station_no = df[df["day"]==date].groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
-        no_bikes = df[df["day"]==date].groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
-
+    station_no, no_bikes = get_station(day, month, df)
     station_address = df_loc[df_loc["TERMINAL_NUMBER"] == station_no]["ADDRESS"].iloc[0]
-    return station_no, station_address, no_bikes
+    return (f"Station {station_no}, at {station_address}"), no_bikes
+
 
 @app.callback(
     Output('sankey', 'figure'),
@@ -375,8 +394,10 @@ def weather_graph(weather, month, df=df):
             marker = dict(
                 color= df.groupby("day").mean()[weather],
                 colorscale= colors_weather[weather],
-                showscale=True,
-                size=10))
+                size=df.groupby("day").mean()["Duration"]/5,
+                sizemin=2,
+                sizeref= (max(df.groupby("day").mean()["Duration"]))/(10**2),
+                showscale=True))
             ],
     "layout": dict(
         xaxis={'title': 'Date'},
@@ -387,7 +408,7 @@ def weather_graph(weather, month, df=df):
         titlefont=dict(color="#191A1A", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
         hovermode="closest",
-        title="Weather and number of rentals",
+        title="Weather, average duration and number of rentals per day",
         plot_bgcolor='#fffcfc',
         paper_bgcolor='#fffcfc',
         legend=dict(font=dict(size=10), orientation='h'))
@@ -438,7 +459,57 @@ def weekday_graph(dummy):
         legend=dict(font=dict(size=10), orientation='h'))
     }
 
+@app.callback(
+    Output('weather2-graph', 'figure'),
+    [Input('choose-weather2', 'value')])
+def weekday_graph(weather, df=df):
+    res  = graph_weather(weather, df)
+    if weather == "TAVG":
+        weather_title = "Temperature in C°"
+    elif weather == "PRCP":
+        weather_title = "Precipitation"
+    else:
+        weather_title = "Wind"
+
+    return {
+        "data":[{"x" : res[0],
+                "y" : res[1],
+                "name": res[2]},
+                {"x": res[3],
+                "y": res[4],
+                "name": res[5] },
+                {"x": res[6],
+                "y": res[7],
+                "name":  res[8]},
+                {"x": res[9],
+                "y": res[10],
+                "name": res[11] },
+                {"x": res[12],
+                "y": res[13],
+                "name": res[14] },
+                ],
+
+    "layout": dict(
+        xaxis={'title': weather_title},
+        yaxis={'title': 'Number of rentals'},
+        autosize=True,
+        height=500,
+        font=dict(color="#191A1A"),
+        titlefont=dict(color="#191A1A", size='14'),
+        margin=dict(l=35,r=35,b=35,t=45),
+        hovermode="closest",
+        title="number of rentals and duration of rides under weather-conditions",
+        plot_bgcolor='#fffcfc',
+        paper_bgcolor='#fffcfc',
+        legend=dict(font=dict(size=10), orientation='h'))
+    }
 
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+# df[df["Start station number"]==31623].groupby("Start station number").count()["Duration"]/50
+# df["Start station number"].unique()
+
+# 9999999 in df["Start station number"]

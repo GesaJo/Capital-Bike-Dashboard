@@ -56,6 +56,7 @@ def day_stacked(day, month, customer, df):
     color2= "#6CFBCE"
     return v, w, x, y, color1, color2
 
+
 def day_single(day, month, df):
 
     df = df[df["month"]==month]
@@ -65,7 +66,6 @@ def day_single(day, month, df):
     v = 0
     w = 0
     return v, w, x, y
-
 
 
 def get_date(day, month, df):
@@ -107,3 +107,56 @@ def graph_week(df=df_weekday, list_days = list_days):
         list_results.append(df[df["weekday"]==day].groupby("hour").sum()["Duration"])
         list_results.append(day)
     return list_results
+
+
+def graph_weather(weather, df):
+    """Graph to return a list with data for plotting weather"""
+
+    list_results = []
+    if weather == "TAVG":
+        list_results.append(df[df["TAVG"]<0][:80000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[df["TAVG"]<0][:80000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("0 or colder")
+        list_results.append(df[df["TAVG"]>0][:80000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[(df["TAVG"]>0) & (df["TAVG"]<5)][:80000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("0 to 5")
+        list_results.append(df[df["TAVG"]>5][:80000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[(df["TAVG"]>5) & (df["TAVG"]<10)][:80000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("05 to 10")
+        list_results.append(df[df["TAVG"]>10][:80000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[(df["TAVG"]>10) & (df["TAVG"]<20)][:80000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("10 to 20")
+        list_results.append(df[df["TAVG"]>20][:80000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[(df["TAVG"]>20)][:80000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("20 or warmer")
+    elif weather == "PRCP":
+        list_results.append(df[df["PRCP"]==0][:100000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[df["PRCP"]==0][:100000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("Dry")
+        list_results.append(df[df["PRCP"]>0][:100000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[(df["PRCP"]>0) & (df["TAVG"]<5)][:100000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("Rain, snow or hail")
+        list_results.extend([0,0,0,0,0,0,0,0,0])
+    elif weather == "AWND":
+        list_results.append(df[df["AWND"]<5][:100000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[df["AWND"]<5][:100000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("No wind to gentle breeze")
+        list_results.append(df[df["AWND"]>5][:100000].groupby("Duration_bins").count()["Duration"].index)
+        list_results.append(df[(df["AWND"]>5) & (df["TAVG"]<5)][:100000].groupby("Duration_bins").count()["Duration"])
+        list_results.append("Stronger wind")
+        list_results.extend([0,0,0,0,0,0,0,0,0])
+
+    return list_results
+
+def get_station(day, month, df):
+    if month == 0:
+        station_no = df.groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
+        no_bikes = df.groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
+    elif day == 0:
+        station_no = df[df["month"]==month].groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
+        no_bikes = df[df["month"]==month].groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
+    else:
+        date = get_date(day, month, df)
+        station_no = df[df["day"]==date].groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
+        no_bikes = df[df["day"]==date].groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
+    return station_no, no_bikes
