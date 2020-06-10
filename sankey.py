@@ -21,7 +21,7 @@ def gen_sankey(df=df_stations, title='Sankey Diagram'):
           line = dict(
             width = 0.5),
           label = all_nodes,
-          color = "blue"
+          color = "#535E7A"
           ),
         link = dict(
           source = source_indices,

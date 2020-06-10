@@ -23,9 +23,9 @@ app = dash.Dash()
 
 app.layout = html.Div([
 
-    html.H1(children='Dashboard Capital Bikeshare 2019',
+    html.H1('Dashboard Capital Bikeshare 2019',
             style={"textAlign": "center",
-            }),
+            }, className = "pretty-container"),
 
 
     ### basic-container1
@@ -33,9 +33,10 @@ app.layout = html.Div([
 
     ####### pretty container
         html.Div([
-                html.H4(
-                    "Filter by month, customer-status, weekday and single day",
+                html.H3(
+                    "Filter by...",
                     className="control_label"),
+                html.H4("Year/month:", className="control_label"),
 
                 dcc.Dropdown(id='choose-month',
                     className="input-line",
@@ -43,14 +44,14 @@ app.layout = html.Div([
                     options=options_months_year,
                      value= 0.0),
 
-                html.P("Customer status:", className="control_label"),
+                html.H4("Customer status:", className="control_label"),
                 dcc.RadioItems(
                     id="customer-status-selector",
                     options=options_customers,
                     value="all",
                     labelStyle={"display": "inline-block"},
                     className="radio-select",),
-                html.P("Weekday:", className="control_label"),
+                html.H4("Weekday:", className="control_label"),
                 dcc.Dropdown(id='choose-weekday',
                     className="input-line",
                     style={"flex-grow":"2",},
@@ -58,7 +59,7 @@ app.layout = html.Div([
                     value= "all"),
 
 
-                    html.P("Display single day:", className="control_label"),
+                    html.H4("Display single day:", className="control_label"),
                     dcc.RadioItems(
                         id="check_single_day",
                         options=[{"label": "Yes", 'value':'yes'},
@@ -130,9 +131,9 @@ app.layout = html.Div([
 
         #### most-used-box
         html.Div([
-            html.H3("Most used station per day/month"),
+            html.H4("Most used station per day/month"),
             html.Div([
-                html.H4(id="most_used_stations"),
+                html.H3(id="most_used_stations"),
                 ], className="mini_container",
             ),
 
@@ -424,7 +425,8 @@ def weekday_graph(dummy):
     return {
         "data":[{"x" : res[0],
                 "y" : res[1],
-                "name": res[2]},
+                "name": res[2],
+                "color": "black"},
                 {"x": res[3],
                 "y": res[4],
                 "name": res[5] },
@@ -475,7 +477,8 @@ def weekday_graph(weather, df=df):
     return {
         "data":[{"x" : res[0],
                 "y" : res[1],
-                "name": res[2]},
+                "name": res[2],
+                "line": {"color":"black"}},
                 {"x": res[3],
                 "y": res[4],
                 "name": res[5] },

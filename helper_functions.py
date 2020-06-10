@@ -8,12 +8,12 @@ df_weekday = pd.read_csv('data/df_weekday.csv')
 def df_customer(df, customer):
     if customer == "members":
         df = df[df["Member type"]=="Member"]
-        color= "#0088D5"
+        color= "#91BCCE"
     elif customer == "casual":
         df = df[df["Member type"]=="Casual"]
-        color= "#6CFBCE"
+        color= "#ff7f0e"
     else:
-        color= "#0E44A4"
+        color= "#535E7A"
     return df, color
 
 
@@ -26,8 +26,8 @@ def months_stacked(month, weekday, customer, df):
     else:
         w=df[(df["Member type"]=="Casual") & (df["month"]==month)].groupby("hour").count()["day"]
         y = df[(df["Member type"]=="Member") & (df["month"]==month)].groupby("hour").count()["day"]
-    color1 = "#0088D5"
-    color2= "#6CFBCE"
+    color1 = "#91BCCE"
+    color2= "#ff7f0e"
     return v, w, x, y, color1, color2
 
 
@@ -52,8 +52,8 @@ def day_stacked(day, month, customer, df):
     y = df[(df["Member type"]=="Member") & (df["day"]==date)].groupby("hour").count()["day"]
     x = df["hour"].unique()
     v = x
-    color1 = "#0088D5"
-    color2= "#6CFBCE"
+    color1 = "#91BCCE"
+    color2= "#ff7f0e"
     return v, w, x, y, color1, color2
 
 

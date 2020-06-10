@@ -2,9 +2,23 @@
 * {
   /* background-color:#ECEBE2; */
   font-family: Arial, Helvetica, sans-serif;
-  color:#0F570C;
+  color:#2F4858;
 }
 
+h1 {
+  color: #2F4858;
+}
+
+
+h2 {
+  color: #ff7f0e;
+}
+
+h3 {color: #2F4858;}
+
+h4 {
+  color: #ff7f0e;
+}
 /* .grid-container1 {
   display: grid;
   grid-template-columns: 70% auto;
@@ -26,7 +40,7 @@
 .input-line {
     /* flex-grow: 1; */
     border-radius: 5px;
-    background-color: #FFE4F4;
+    /* background-color: #FFE4F4; */
     margin: 5px;
     padding: 10px;
 }
@@ -42,7 +56,7 @@
 
 .mini_container {
   border-radius: 5px;
-  background-color: #F2ECFF;
+  background-color: #FAEEE2;
   margin-top: 10px;
   margin: 10px;
   padding: 10px;
@@ -73,7 +87,7 @@
 
  .pretty-container {
    border-radius: 20px;
-   background-color: #E6F4F1;
+   background-color: #EAEEEC;
    margin: 10px;
    padding: 15px;
    position: relative;
