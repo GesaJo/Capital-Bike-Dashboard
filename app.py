@@ -18,7 +18,7 @@ from sankey import gen_sankey
 df = pd.read_csv('data/df_main.csv')
 df_loc = pd.read_csv("data/df_loc.csv")
 
-mapbox_access_token = pd.read_csv("pw.txt")
+mapbox_access_token = pd.read_csv("pw.txt", header=None)
 app = dash.Dash()
 
 app.layout = html.Div([
@@ -120,7 +120,8 @@ app.layout = html.Div([
             dcc.Input(id="map_single_station",
                     type="text",
                     placeholder = "Station number",
-                    debounce = True,)
+                    debounce = True,
+                    value="")
                 ],
                 className="pretty-container nine columns",
             ),
@@ -329,10 +330,11 @@ def update_map(month, single_station, customer, df=df):
          "lon" : lon,
          "mode" : "markers",
          "marker": {"size": m_size,
-                    "sizemin":2,
+                    "sizemin": 2,
                     "color": color,
-                    "opacity":0.5},
-         "text": df_c.groupby('Start station number').count()['Duration']}],
+                    "opacity": 0.5},
+         "text": df_c.groupby('Start station number').count()['Duration']
+         }],
     "layout": dict(
         autosize=True,
         height=500,
@@ -345,7 +347,7 @@ def update_map(month, single_station, customer, df=df):
         title="Number of bikes rented from each station",
         legend=dict(font=dict(size=10), orientation='h'),
         mapbox=dict(
-            accesstoken=mapbox_access_token,
+            accesstoken=mapbox_access_token[0][0],
             style="light",
             center=dict(lon=-77.03722,lat=38.90805),
             zoom=11))
