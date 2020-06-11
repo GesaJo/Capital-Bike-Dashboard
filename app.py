@@ -22,10 +22,26 @@ mapbox_access_token = pd.read_csv("pw.txt", header=None)
 app = dash.Dash()
 
 app.layout = html.Div([
+    html.Div([
+        html.Img(id="bike image",
+                height="200px",
+                src="assets/bike_flipped.jpg",
+                style={"border-radius": "20px"},
+                className= "pretty container"),
+        html.H1('Dashboard Capital Bikeshare 2019',
+                style={"textAlign": "center",
+                        "display":"flex",
+                        "alignItems":"center",
+                        "justifyContent": "center",
+                        # "height":"150px",
+                        # "paddingTop": "50px",
 
-    html.H1('Dashboard Capital Bikeshare 2019',
-            style={"textAlign": "center",
-            }, className = "pretty-container"),
+                },
+                # height="150px",
+                 className = "pretty-container ten columns"
+                 ),
+
+        ], className="sidebyside"),
 
 
     ### basic-container1
@@ -34,9 +50,9 @@ app.layout = html.Div([
     ####### pretty container
         html.Div([
                 html.H3(
-                    "Filter by...",
-                    className="control_label"),
-                html.H4("Year/month:", className="control_label"),
+                    "Filter by:",
+                    className="filter"),
+                html.H4("Month or whole year:", className="control_label"),
 
                 dcc.Dropdown(id='choose-month',
                     className="input-line",
@@ -109,7 +125,7 @@ app.layout = html.Div([
                 max=df['month'].max(),
                 value=df['month'].min(),
                 marks=months_dict,
-                step=None),
+                ),
             dcc.RadioItems(
                 id="customer-status-selector-map",
                 options=options_customers,
@@ -184,12 +200,19 @@ app.layout = html.Div([
             html.Div([
                 dcc.Graph(
                     id='sankey'),
-                            ], className = "pretty-container seven columns"),
+                            ], className = "container-sankey"),
 
             html.Div([
+                html.P("Number of rentals per weekday and time of the day",
+                        style={"textAlign":"center",
+                                "fontSize": "20px",
+                                "color": "#ff7f0e"
+                        }),
                 dcc.Graph(
-                    id="weekday-graph")
-                    ],className="pretty-container five columns")
+                    id="weekday-graph"),
+
+                    ],className="pretty-container six columns"),
+
             ],className="basic-container"),
 
         ### END basic container 3
@@ -243,7 +266,10 @@ app.layout = html.Div([
         ], className="basic-container")
         ##### END basic container 4
 
-    ])
+    ],className= "general",
+    # style={"background-image":"url('assets/bckgrnd.jpg')",
+    #         "background-repeat": "repeat"}
+            )
 
 
 
@@ -281,19 +307,23 @@ def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
     "data":[{"type": "bar",
             "x" : x,
             "y" : y,
-            "marker":{"color": color1},
+            "marker":{"color": color1,
+                    # "opacity": 0.7
+                    },
             "name": "Members"},
             {"type":"bar",
             "x": v,
             "y": w,
-            "marker": {"color": color2},
+            "marker": {"color": color2,
+                        # "opacity": 0.7
+                        },
             "name":"Casual riders"}],
     "layout": dict(
         barmode="stack",
         autosize=True,
         height=500,
-        font=dict(color="#191A1A"),
-        titlefont=dict(color="#191A1A", size='14'),
+        font=dict(color="#485C6E"),
+        titlefont=dict(color="#485C6E", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
         hovermode="closest",
         title="Number of rides per hour of the day",
@@ -339,8 +369,8 @@ def update_map(month, single_station, customer, df=df):
     "layout": dict(
         autosize=True,
         height=500,
-        font=dict(color="#191A1A"),
-        titlefont=dict(color="#191A1A", size='14'),
+        font=dict(color="#485C6E"),
+        titlefont=dict(color="#485C6E", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
         hovermode="closest",
         plot_bgcolor='#fffcfc',
@@ -375,6 +405,57 @@ def draw_sankey(value):
     fig = gen_sankey()
     return fig
 
+@app.callback(
+    Output('weekday-graph', 'figure'),
+    [Input('choose-weather', 'value')])
+def weekday_graph(dummy):
+    res  = graph_week()
+    return {
+        "data":[{"x" : res[0],
+                "y" : res[1],
+                "name": res[2],
+                "line": {"color": "#2D6F76"}},
+                {"x": res[3],
+                "y": res[4],
+                "name": res[5],
+                "line": {"color": "#A1E1E9"}},
+                {"x": res[6],
+                "y": res[7],
+                "name":  res[8],
+                "line": {"color": "#63A3AA"}},
+                {"x": res[9],
+                "y": res[10],
+                "name": res[11],
+                "line": {"color": "#5176A1"}},
+                {"x": res[12],
+                "y": res[13],
+                "name": res[14],
+                "line": {"color": "#7B74A8"}},
+                {"x": res[15],
+                "y": res[16],
+                "name": res[17],
+                "line": {"color": "#A371A0"}},
+                {"x": res[18],
+                "y": res[19],
+                "name": res[20],
+                "line": {"color": "#C2708D"}}
+                ],
+
+    "layout": dict(
+        # xaxis={'title': 'Hour of day'},
+        yaxis={'title': 'Number of rentals'},
+        autosize=True,
+        height=500,
+        font=dict(color="#485C6E"),
+        titlefont=dict(color="#485C6E", size='14'),
+        margin=dict(l=35,r=35,b=35,t=45),
+        hovermode="closest",
+        # title="Weekdays, time and number of rentals",
+        plot_bgcolor='#fffcfc',
+        paper_bgcolor='#fffcfc',
+        legend=dict(font=dict(size=10), orientation='h'))
+    }
+
 
 @app.callback(
     Output('weather-graph', 'figure'),
@@ -406,8 +487,8 @@ def weather_graph(weather, month, df=df):
         yaxis={'title': 'Number of rentals'},
         autosize=True,
         height=500,
-        font=dict(color="#191A1A"),
-        titlefont=dict(color="#191A1A", size='14'),
+        font=dict(color="#485C6E"),
+        titlefont=dict(color="#485C6E", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
         hovermode="closest",
         title="Weather, average duration and number of rentals per day",
@@ -417,50 +498,7 @@ def weather_graph(weather, month, df=df):
     }
 
 
-@app.callback(
-    Output('weekday-graph', 'figure'),
-    [Input('choose-weather', 'value')])
-def weekday_graph(dummy):
-    res  = graph_week()
-    return {
-        "data":[{"x" : res[0],
-                "y" : res[1],
-                "name": res[2],
-                "color": "black"},
-                {"x": res[3],
-                "y": res[4],
-                "name": res[5] },
-                {"x": res[6],
-                "y": res[7],
-                "name":  res[8]},
-                {"x": res[9],
-                "y": res[10],
-                "name": res[11] },
-                {"x": res[12],
-                "y": res[13],
-                "name": res[14] },
-                {"x": res[15],
-                "y": res[16],
-                "name": res[17] },
-                {"x": res[18],
-                "y": res[19],
-                "name": res[20]}
-                ],
 
-    "layout": dict(
-        xaxis={'title': 'Hour of day'},
-        yaxis={'title': 'Number of rentals'},
-        autosize=True,
-        height=500,
-        font=dict(color="#191A1A"),
-        titlefont=dict(color="#191A1A", size='14'),
-        margin=dict(l=35,r=35,b=35,t=45),
-        hovermode="closest",
-        title="Weekdays, time and number of rentals",
-        plot_bgcolor='#fffcfc',
-        paper_bgcolor='#fffcfc',
-        legend=dict(font=dict(size=10), orientation='h'))
-    }
 
 @app.callback(
     Output('weather2-graph', 'figure'),
@@ -498,8 +536,8 @@ def weekday_graph(weather, df=df):
         yaxis={'title': 'Number of rentals'},
         autosize=True,
         height=500,
-        font=dict(color="#191A1A"),
-        titlefont=dict(color="#191A1A", size='14'),
+        font=dict(color="#485C6E"),
+        titlefont=dict(color="#485C6E", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
         hovermode="closest",
         title="number of rentals and duration of rides under weather-conditions",

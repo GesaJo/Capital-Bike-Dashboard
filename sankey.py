@@ -31,7 +31,9 @@ def gen_sankey(df=df_stations, title='Sankey Diagram'):
 
     layout =  dict(
         title = "Most important routes",
-        height = 700,
+        titlefont=dict(color="#ff7f0e", size='22'),
+        height = 600,
+        margin =dict(l=0, r=50, t=70, b=0),
         font = dict(
           size = 16
         ))

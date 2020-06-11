@@ -2,11 +2,14 @@
 * {
   /* background-color:#ECEBE2; */
   font-family: Arial, Helvetica, sans-serif;
-  color:#2F4858;
+  color:#485C6E;
+
 }
 
 h1 {
-  color: #2F4858;
+  /* color: #5C8798; */
+  color: #485C6E;
+  font-size:40px;
 }
 
 
@@ -14,11 +17,26 @@ h2 {
   color: #ff7f0e;
 }
 
-h3 {color: #2F4858;}
+h3 {
+  color: #ff7f0e;
+  /* margin-bottom: -1em; */
+  /* color:#5C8798; */
+}
 
 h4 {
-  color: #ff7f0e;
+  /* color: #ff7f0e; */
+  color:#5C8798;
+  margin-top: 3em;
+  margin-bottom: 0.5em;
 }
+
+h5 {
+  margin-bottom: 0.5em;
+}
+
+/* Dropdown {
+  padding-bottom: 80px;
+} */
 /* .grid-container1 {
   display: grid;
   grid-template-columns: 70% auto;
@@ -28,6 +46,10 @@ h4 {
 
 /* .grid-container > div > div {
   background-color: rgba(255, 255, 255, 0.8);
+} */
+
+/* .general {
+
 } */
 
 .sidebyside {
@@ -42,7 +64,7 @@ h4 {
     border-radius: 5px;
     /* background-color: #FFE4F4; */
     margin: 5px;
-    padding: 10px;
+    /* padding: 10px; */
 }
 
 .radio-select {
@@ -56,7 +78,7 @@ h4 {
 
 .mini_container {
   border-radius: 5px;
-  background-color: #FAEEE2;
+  background-color: #e8eaef;
   margin-top: 10px;
   margin: 10px;
   padding: 10px;
@@ -87,7 +109,7 @@ h4 {
 
  .pretty-container {
    border-radius: 20px;
-   background-color: #EAEEEC;
+   background-color: #FFF7F1;
    margin: 10px;
    padding: 15px;
    position: relative;
@@ -97,6 +119,18 @@ h4 {
 # check_single_day {
     align-content: center;
 }
- /* .pretty_container basic-graph {
-   flex-grow: 2;
- } */
+
+.filter {
+  margin-bottom: -1em;
+
+}
+
+.container-sankey {
+  border-radius: 20px;
+  background-color: #FFF7F1;
+  margin: 10px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px lightgrey;
+  width: 49.75%; 
+}
