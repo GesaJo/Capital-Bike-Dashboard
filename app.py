@@ -135,11 +135,12 @@ app.layout = html.Div([
                 labelStyle={"display": "inline-block"},
                 className="radio-select"),
 
-            html.H5("Search for station by station-number:"),
+            html.H5("Search for station by station-number (numbers range from 31000 to 32609):"),
             dcc.Input(id="map_single_station",
                     type="text",
-                    placeholder = "Station number",
-                    debounce = True,
+                    placeholder = "Station-number",
+                    # persistence = True,
+                    # debounce = True,
                     value="")
                 ],
                 className="pretty-container nine columns",
@@ -238,7 +239,7 @@ app.layout = html.Div([
                 html.P(
                     "Filter by month and see the impact of different \
                     weather-conditions for the whole dataset. The size of the \
-                    dots represents the duration of the ride.",
+                    dots represents the average duration of the rides.",
                     className="control_label"),
                 dcc.Dropdown(id='choose-weather',
                     className="input-line",
@@ -262,9 +263,8 @@ app.layout = html.Div([
                         dcc.Graph(id='weather2-graph'),
                         html.P(
                             "See the impact of different weather-conditions on \
-                             duration of rides\
-                             for a datasample that has the same number of \
-                             rentals for each condition.",
+                             average duration of rides for a datasample-set that has \
+                             the same number of rentals for each condition.",
                             className="control_label"),
                         dcc.Dropdown(id='choose-weather2',
                             className="input-line",
@@ -357,18 +357,17 @@ def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
 def update_map(month, single_station, customer, df=df):
     map_data = df[df['month']==month]
     df_c, color = df_customer(map_data, customer)
-    try:
-        single_station = int(single_station)
-    except (TypeError, ValueError):
-        single_station = 9999999
-    if single_station in map_data["Start station number"]:
-        lat = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LATITUDE']
-        lon = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LONGITUDE']
-        m_size= df_c[df_c["Start station number"]==single_station].groupby("Start station number").count()["Duration"]/50
-    else:
+    if single_station == "":
         lat = df_loc['LATITUDE']
         lon = df_loc['LONGITUDE']
         m_size= df_c.groupby("Start station number").count()["Duration"]/50
+    else:
+        single_station = int(single_station)
+        lat = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LATITUDE']
+        lon = df_loc[df_loc['TERMINAL_NUMBER'] == single_station]['LONGITUDE']
+        m_size= df_c[df_c["Start station number"]==single_station].groupby("Start station number").count()["Duration"]/50
+
+
     return {
     "data":[
         {"type" : "scattermapbox",
@@ -560,9 +559,3 @@ def weekday_graph(weather, df=df):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
-# df[df["Start station number"]==31623].groupby("Start station number").count()["Duration"]/50
-# df["Start station number"].unique()
-
-# 9999999 in df["Start station number"]
