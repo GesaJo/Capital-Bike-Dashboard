@@ -1,29 +1,28 @@
-# Bikesharing-data Analysis
+# Bikesharing-data analysis
 
-
-
-## Project analysing Bike Data
-
-Models:
-
-
+Interactive dashboard of bikesharing data of 2019 (to be extended).
 This project has been developed in week 3 of the Spiced-Bootcamp and improved afterwards.
 
-## How to use it
+Created using mainly pandas and dash.
 
+<img src="dashboard.gif" width="1000"/>
+
+## How to use it
+- clone this git-repo
+- pip install requirements.txt
+- run python app.py in your terminal and open a browser at specified adress (localhost:8050)
 
 ## Data
-- directly from capital bikeshare and 
-- opendata.dc.gov (locations)
-- weather data from NOAA (National Centers for environmental Information) https://www.ncdc.noaa.gov/
+- main data from capital bikeshare (https://www.capitalbikeshare.com/system-data)
+- locations from opendata.dc.gov
+- weather data from NOAA's National Centers for environmental Information (https://www.ncdc.noaa.gov/)
 
 
 ## To Do:
 - ~~get weather data and incorporate~~
 - ~~get holiday-data and incorporate~~
-- train models
 - add data for 2018
-- documentation
-
-
-
+- incorporate trained prediction models
+- tests
+- dockerize
+- host

@@ -17,7 +17,7 @@ from sankey import gen_sankey
 # load data
 df = pd.read_csv('data/df_main.csv')
 df_loc = pd.read_csv("data/df_loc.csv")
-mapbox_access_token = pd.read_csv("pw.txt", header=None)
+mapbox_access_token = pd.read_csv("ignore/pw.txt", header=None)
 
 # main app
 app = dash.Dash()
