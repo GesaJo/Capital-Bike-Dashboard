@@ -114,7 +114,7 @@ options_customers = [
     {"label": "Casual riders ", "value": "casual"}]
 
 
-colors_weather = {"PRCP":"Teal",
+colors_weather = {"PRCP":"Aggrnyl",
         "TAVG": "BlueRed",
         # "SNOW": "Magenta",
         "AWND": "Blugrn",

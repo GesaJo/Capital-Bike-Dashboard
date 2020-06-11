@@ -453,7 +453,7 @@ def weekday_graph(dummy):
         # title="Weekdays, time and number of rentals",
         plot_bgcolor='#fffcfc',
         paper_bgcolor='#fffcfc',
-        legend=dict(font=dict(size=10), orientation='h'))
+        legend=dict(font=dict(size=12), orientation='h'))
     }
 
 
@@ -516,19 +516,23 @@ def weekday_graph(weather, df=df):
         "data":[{"x" : res[0],
                 "y" : res[1],
                 "name": res[2],
-                "line": {"color":"black"}},
+                "line": {"color":"#DD8097"}},
                 {"x": res[3],
                 "y": res[4],
-                "name": res[5] },
+                "name": res[5],
+                "line": {"color":"#A17199"}},
                 {"x": res[6],
                 "y": res[7],
-                "name":  res[8]},
+                "name":  res[8],
+                "line": {"color":"#A39CFF"}},
                 {"x": res[9],
                 "y": res[10],
-                "name": res[11] },
+                "name": res[11],
+                "line": {"color":"#C1BAE0"}},
                 {"x": res[12],
                 "y": res[13],
-                "name": res[14] },
+                "name": res[14],
+                "line": {"color":"#E1DAFF"}},
                 ],
 
     "layout": dict(
