@@ -74,7 +74,7 @@ options_days31 = [
 {'label': '31', 'value': 31}]
 
 options_days_w = [
-{'label': '00', 'value': 0},
+{'label': '', 'value': 0},
 {'label': '01', 'value': 1},
 {'label': '02', 'value': 2},
 {'label': '03', 'value': 3},

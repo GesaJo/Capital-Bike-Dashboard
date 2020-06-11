@@ -22,33 +22,19 @@ mapbox_access_token = pd.read_csv("pw.txt", header=None)
 app = dash.Dash()
 
 app.layout = html.Div([
-    html.Div([
-        html.Img(id="bike image",
-                height="200px",
-                src="assets/bike_flipped.jpg",
-                style={"border-radius": "20px"},
-                className= "pretty container"),
-        html.H1('Dashboard Capital Bikeshare 2019',
-                style={"textAlign": "center",
-                        "display":"flex",
-                        "alignItems":"center",
-                        "justifyContent": "center",
-                        # "height":"150px",
-                        # "paddingTop": "50px",
 
-                },
-                # height="150px",
-                 className = "pretty-container ten columns"
-                 ),
-
-        ], className="sidebyside"),
 
 
     ### basic-container1
     html.Div([
 
-    ####### pretty container
+    ####### pretty container ceslection
         html.Div([
+                html.Img(id="bike image",
+                        height="180px",
+                        src="assets/bike_flipped.jpg",
+                        style={"border-radius": "20px"},
+                        className= "pretty container"),
                 html.H3(
                     "Filter by:",
                     className="filter"),
@@ -100,15 +86,31 @@ app.layout = html.Div([
             ],
             className="pretty-container three columns",
             ),
-    ##### END pretty container
+    ##### END pretty container selection
 
-    ### basic graph
+
+    ### basic graph and title
         html.Div([
-            dcc.Graph(id='basic-graph'),
-            ],
-            className="pretty-container nine columns"),
-    ### END basic graph
-    ], className="basic-container"),
+            html.Div([
+
+                html.H1('Dashboard Capital Bikeshare 2019',
+                        style={"textAlign": "center",
+                                "display":"flex",
+                                "alignItems":"center",
+                                "justifyContent": "center"},
+
+                         )], className = "pretty-container"),
+
+            html.Div([
+                dcc.Graph(id='basic-graph')],
+                className="pretty-container")
+            ], className="basic-container-column twelve columns",
+            ),
+    ### END basic graph and title
+
+    ],
+    className="basic-container"
+    ),
     ### END basic container1
 
 
@@ -147,14 +149,15 @@ app.layout = html.Div([
 
         #### most-used-box
         html.Div([
-            html.H4("Most used station per day/month"),
+            html.H2("Most used station per day/month",
+                    style={"textAlign": "center"}),
             html.Div([
                 html.H3(id="most_used_stations"),
                 ], className="mini_container",
             ),
 
             html.Div([
-                html.H5("Number of bikes rented per day/month:"),
+                html.H5("Number of bikes rented:"),
                 html.H3(id="number_bikes"),
                 ], className="mini_container",
             ),
@@ -217,7 +220,14 @@ app.layout = html.Div([
 
         ### END basic container 3
 
+        html.Div([
+            html.H3("Influence of weather-conditions",
+                    style={"textAlign": "center",
+                            "fontSize": "20px",
+                            "fontWeight": "normal"
+                            })
 
+        ], className="pretty-container"),
 
         #### basic container 4
         html.Div([
@@ -226,12 +236,14 @@ app.layout = html.Div([
             html.Div([
                 dcc.Graph(id='weather-graph'),
                 html.P(
-                    "Filter by month and see the impact of the weather",
+                    "Filter by month and see the impact of different \
+                    weather-conditions for the whole dataset. The size of the \
+                    dots represents the duration of the ride.",
                     className="control_label"),
                 dcc.Dropdown(id='choose-weather',
                     className="input-line",
                     style={"flex-grow":"2",},
-                    options=[{"label": "Temperature", "value": "TAVG"},
+                    options=[{"label": "Temperature in C°", "value": "TAVG"},
                             {"label":"Precipitation", "value":"PRCP"},
                             {"label":"Windspeed", "value":"AWND"}],
                      value= "TAVG"),
@@ -247,14 +259,17 @@ app.layout = html.Div([
         ####### pretty container
             html.Div([
                     html.Div([
-                        html.P(
-                            "Weather-graph",
-                            className="control_label"),
                         dcc.Graph(id='weather2-graph'),
+                        html.P(
+                            "See the impact of different weather-conditions on \
+                             duration of rides\
+                             for a datasample that has the same number of \
+                             rentals for each condition.",
+                            className="control_label"),
                         dcc.Dropdown(id='choose-weather2',
                             className="input-line",
                             style={"flex-grow":"2",},
-                            options=[{"label": "Temperature", "value": "TAVG"},
+                            options=[{"label": "Temperature in C°", "value": "TAVG"},
                                     {"label":"Precipitation", "value":"PRCP"},
                                     {"label":"Windspeed", "value":"AWND"}],
                              value= "TAVG"),
@@ -321,7 +336,7 @@ def update_basic_graph(month, weekday, customer, check, day1, month1, df=df):
     "layout": dict(
         barmode="stack",
         autosize=True,
-        height=500,
+        height=600,
         font=dict(color="#485C6E"),
         titlefont=dict(color="#485C6E", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
@@ -443,7 +458,7 @@ def weekday_graph(dummy):
 
     "layout": dict(
         # xaxis={'title': 'Hour of day'},
-        yaxis={'title': 'Number of rentals'},
+        # yaxis={'title': 'Number of rentals'},
         autosize=True,
         height=500,
         font=dict(color="#485C6E"),
@@ -505,12 +520,6 @@ def weather_graph(weather, month, df=df):
     [Input('choose-weather2', 'value')])
 def weekday_graph(weather, df=df):
     res  = graph_weather(weather, df)
-    if weather == "TAVG":
-        weather_title = "Temperature in C°"
-    elif weather == "PRCP":
-        weather_title = "Precipitation"
-    else:
-        weather_title = "Wind"
 
     return {
         "data":[{"x" : res[0],
@@ -536,15 +545,13 @@ def weekday_graph(weather, df=df):
                 ],
 
     "layout": dict(
-        xaxis={'title': weather_title},
-        yaxis={'title': 'Number of rentals'},
         autosize=True,
         height=500,
         font=dict(color="#485C6E"),
         titlefont=dict(color="#485C6E", size='14'),
         margin=dict(l=35,r=35,b=35,t=45),
         hovermode="closest",
-        title="number of rentals and duration of rides under weather-conditions",
+        title="Number of rentals and average duration of rides under weather-conditions",
         plot_bgcolor='#fffcfc',
         paper_bgcolor='#fffcfc',
         legend=dict(font=dict(size=10), orientation='h'))
