@@ -1,11 +1,13 @@
-"""helper functions and data"""
+"""Helper-functions for the main app"""
 import pandas as pd
 from helper_data import list_days
 
 df_weekday = pd.read_csv('data/df_weekday.csv')
 
-
 def df_customer(df, customer):
+    """Returns the dataframe filtered by customer-status and
+       corresponding color"""
+
     if customer == "members":
         df = df[df["Member type"]=="Member"]
         color= "#91BCCE"
@@ -17,7 +19,10 @@ def df_customer(df, customer):
     return df, color
 
 
-def months_stacked(month, weekday, customer, df):
+def months_stacked(month, customer, df):
+    """Returns the x and y values for a stacked barplot for
+       different customer-status for given month"""
+
     x=df["hour"].unique()
     v=x
     if month == 0:
@@ -31,10 +36,11 @@ def months_stacked(month, weekday, customer, df):
     return v, w, x, y, color1, color2
 
 
-def months_single(month, weekday, df):
+def months_single(month, df):
+    """returns x and y values for barplot"""
+
     x=df["hour"].unique()
-    v=0
-    w=0
+    v=w=0
     if month == 0:
         x=df["hour"].unique()
         y=df.groupby("hour").count()["day"]
@@ -45,6 +51,8 @@ def months_single(month, weekday, df):
 
 
 def day_stacked(day, month, customer, df):
+    """returns x and y-values for stacked barplot for given day
+       and customer-status"""
 
     df = df[df["month"]==month]
     date = get_date(day, month, df)
@@ -58,17 +66,19 @@ def day_stacked(day, month, customer, df):
 
 
 def day_single(day, month, df):
+    """returns x and y values for barplot for a given day and customer status"""
 
     df = df[df["month"]==month]
     date = get_date(day, month, df)
     y = df[df["day"]==date].groupby("hour").count()["day"]
     x = df["hour"].unique()
-    v = 0
-    w = 0
+    v = w = 0
     return v, w, x, y
 
 
 def get_date(day, month, df):
+    """Returns the given day and month into a date with type string"""
+
     if day < 10:
         day = "0"+ str(day)
     if month < 10:
@@ -78,7 +88,7 @@ def get_date(day, month, df):
 
 
 def get_weekday(weekday, df):
-    """returns the dataframe filtered by given day"""
+    """returns the dataframe filtered by given weekday"""
 
     if weekday == "Monday":
         df = df[df["weekday"]=="Monday"]
@@ -94,13 +104,12 @@ def get_weekday(weekday, df):
         df = df[df["weekday"]=="Saturday"]
     elif weekday == "Sunday":
         df = df[df["weekday"]=="Sunday"]
-    else:
-        df = df
     return df
 
 
 def graph_week(df=df_weekday, list_days = list_days):
-    """Graph to return a list with data for plotting for each weekday"""
+    """Graph to return a list with plotting-data for each weekday"""
+
     list_results = []
     for day in list_days:
         list_results.append(df[df["weekday"]==day]["hour"])
@@ -110,7 +119,7 @@ def graph_week(df=df_weekday, list_days = list_days):
 
 
 def graph_weather(weather, df):
-    """Graph to return a list with data for plotting weather"""
+    """Graph to return a list with plotting-data for weather-graph"""
 
     list_results = []
     if weather == "TAVG":
@@ -145,10 +154,12 @@ def graph_weather(weather, df):
         list_results.append(df[(df["AWND"]>5) & (df["TAVG"]<5)][:100000].groupby("Duration_bins").count()["Duration"])
         list_results.append("Stronger wind")
         list_results.extend([0,0,0,0,0,0,0,0,0])
-
     return list_results
 
 def get_station(day, month, df):
+    """Returns the number and adress of the most used station of a given year,
+       month or day and the number of bikes rented."""
+       
     if month == 0:
         station_no = df.groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
         no_bikes = df.groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]

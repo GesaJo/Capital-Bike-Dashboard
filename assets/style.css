@@ -1,32 +1,23 @@
 
 * {
-  /* background-color:#ECEBE2; */
   font-family: Roboto;
-  /* Helvetica; */
   color:#485C6E;
-
 }
 
 h1 {
-  /* color: #5C8798; */
   color: #485C6E;
   font-size:40px;
 }
 
-
 h2 {
-  /* color: #5C8798; */
   margin-bottom: 1.5em;
 }
 
 h3 {
   color: #ff7f0e;
-  /* margin-bottom: -1em; */
-  /* color:#5C8798; */
 }
 
 h4 {
-  /* color: #ff7f0e; */
   color:#5C8798;
   margin-top: 3em;
   margin-bottom: 0.5em;
@@ -36,37 +27,13 @@ h5 {
   margin-bottom: 0.5em;
 }
 
-/* Dropdown {
-  padding-bottom: 80px;
-} */
-/* .grid-container1 {
-  display: grid;
-  grid-template-columns: 70% auto;
-  grid-gap: 30px;
-  background-color: #ECEBE2;
-} */
-
-/* .grid-container > div > div {
-  background-color: rgba(255, 255, 255, 0.8);
-} */
-
-/* .general {
-
-} */
-
 .sidebyside {
   display: flex;
-  /* grid-template-columns: 40% auto;
-  grid-gap: 20px; */
-  /* background-color: #FFD786; */
 }
 
 .input-line {
-    /* flex-grow: 1; */
     border-radius: 5px;
-    /* background-color: #FFE4F4; */
     margin: 5px;
-    /* padding: 10px; */
 }
 
 .radio-select {
@@ -75,14 +42,12 @@ h5 {
 
 .basic-container {
   display: flex;
-  /* background-color: #9AAAFF; */
 }
 
 .basic-container-column {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* background-color: #9AAAFF; */
 }
 
 .mini_container {
@@ -90,13 +55,10 @@ h5 {
   background-color: #FFF7F1;
   margin-top: 20px;
   margin-bottom: 40px;
-  /* margin: 10px; */
   padding: 15px;
   position: relative;
   box-shadow: 2px 2px 2px lightgrey;
 }
-
-
 
 .one.column,
  .one.columns                    { width: 8%;             }
@@ -112,15 +74,10 @@ h5 {
  .eleven.columns                 { width: 91.5%; }
  .twelve.columns                 { width: 100%; margin-left: 0; }
 
- .one-third.column               { width: 30.6666666667%; }
- .two-thirds.column              { width: 65.3333333333%; }
-
- /* .one-half.column */
 
  .pretty-container {
    border-radius: 20px;
-  background-color: #e8f1f9;
-   /* background-color: #FFF7F1; */
+   background-color: #e8f1f9;
    margin: 10px;
    padding: 15px;
    position: relative;
@@ -133,7 +90,6 @@ h5 {
 
 .filter {
   margin-bottom: -1em;
-
 }
 
 .container-sankey {
