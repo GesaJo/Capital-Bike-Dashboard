@@ -7,10 +7,6 @@ Created using mainly pandas and dash.
 
 <img src="dashboard.gif" width="1000"/>
 
-## How to use it
-- clone this git-repo
-- pip install requirements.txt
-- run python app.py in your terminal and open a browser at specified adress (localhost:8050).
 
 ## Data
 - main data from capital bikeshare (https://www.capitalbikeshare.com/system-data)
@@ -22,6 +18,7 @@ Created using mainly pandas and dash.
 - ~~get weather data and incorporate~~
 - ~~get holiday-data and incorporate~~
 - add data for 2018
+- add data preparation file and "how to"-section
 - incorporate trained prediction models
 - tests
 - dockerize
