@@ -17,7 +17,7 @@ Created using mainly pandas and dash.
 ## To Do:
 - ~~get weather data and incorporate~~
 - ~~get holiday-data and incorporate~~
-- add data for 2018
+- add data for 2018 and 2020
 - add data preparation file and "how to"-section
 - incorporate trained prediction models
 - tests
