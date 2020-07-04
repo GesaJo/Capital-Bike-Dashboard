@@ -9,7 +9,7 @@ Created using mainly pandas and dash.
 
 
 ## Data
-- main data from capital bikeshare (https://www.capitalbikeshare.com/system-data)
+- main data from capital bikeshare (https://www.capitalbikeshare.com/system-data): years 2018 and 2019 and first quarter of 2020, nearly 7.5m rides.
 - locations from opendata.dc.gov
 - weather data from NOAA's National Centers for environmental Information (https://www.ncdc.noaa.gov/)
 
@@ -19,7 +19,7 @@ Created using mainly pandas and dash.
 - ~~get holiday-data and incorporate~~
 - clean up and upload notebooks
 - incorporate trained prediction models
-- add data for 2018 and 2020
+- ~~add data (rides and weather) for 2018 and 2020~~
 - add data preparation file and "how to"-section
 - tests
 - dockerize
