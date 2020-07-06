@@ -1,7 +1,7 @@
 """Helper-data for main app and helper-functions."""
 
 options_months_year = [
-    {'label': 'Year', 'value': 0},
+    {'label': 'All months', 'value': 0},
     {'label': 'January', 'value': 1},
     {'label': 'February', 'value': 2},
     {'label': 'March', 'value': 3},
@@ -104,6 +104,19 @@ options_days_w = [
     {'label': '29', 'value': 29},
     {'label': '30', 'value': 30},
     {'label': '31', 'value': 31}]
+
+options_years = [
+    {"label": "Average", "value": 0.0},
+    {"label": "2018", "value": 2018},
+    {"label": "2019", "value": 2019},
+    {"label": "2020", "value": 2020}
+    ]
+
+options_years_only = [
+    {"label": "2018", "value": 2018},
+    {"label": "2019", "value": 2019},
+    {"label": "2020", "value": 2020}
+    ]
 
 
 options_customers = [

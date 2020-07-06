@@ -40,6 +40,15 @@ h5 {
   margin-bottom: 10px;
 }
 
+.radio-select-map {
+  margin-top: 10px;
+  margin-right: 100px;
+}
+
+.radio-select-map2 {
+  margin-top: 10px;
+}
+
 .basic-container {
   display: flex;
 }
@@ -101,3 +110,9 @@ h5 {
   box-shadow: 2px 2px 2px lightgrey;
   width: 49.75%;
 }
+
+/* .control_label { */
+  /* padding-top: 1px; */
+  /* color: #ff7f0e; */
+  /* background-color: #0F570C; */
+/* } */

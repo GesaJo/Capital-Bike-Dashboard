@@ -50,12 +50,12 @@ def months_single(month, df):
     return v, w, x, y
 
 
-def day_stacked(day, month, customer, df):
+def day_stacked(day, month, year, customer, df):
     """returns x and y-values for stacked barplot for given day
        and customer-status"""
 
     df = df[df["month"]==month]
-    date = get_date(day, month, df)
+    date = get_date(day, month, year, df)
     w = df[(df["Member type"]=="Casual") & (df["day"]==date)].groupby("hour").count()["day"]
     y = df[(df["Member type"]=="Member") & (df["day"]==date)].groupby("hour").count()["day"]
     x = df["hour"].unique()
@@ -65,25 +65,26 @@ def day_stacked(day, month, customer, df):
     return v, w, x, y, color1, color2
 
 
-def day_single(day, month, df):
+def day_single(day, month, year, df):
     """returns x and y values for barplot for a given day and customer status"""
 
     df = df[df["month"]==month]
-    date = get_date(day, month, df)
+    date = get_date(day, month, year, df)
     y = df[df["day"]==date].groupby("hour").count()["day"]
     x = df["hour"].unique()
     v = w = 0
     return v, w, x, y
 
 
-def get_date(day, month, df):
+
+def get_date(day, month, year, df):
     """Returns the given day and month into a date with type string"""
 
     if day < 10:
         day = "0"+ str(day)
     if month < 10:
         month = "0"+str(month)
-    date =f"2019-{month}-{day}"
+    date =f"{year}-{month}-{day}"
     return date
 
 
