@@ -157,7 +157,7 @@ def graph_weather(weather, df):
         list_results.extend([0,0,0,0,0,0,0,0,0])
     return list_results
 
-def get_station(day, month, df):
+def get_station(day, month, year, df):
     """Returns the number and adress of the most used station of a given year,
        month or day and the number of bikes rented at that station."""
 
@@ -168,7 +168,7 @@ def get_station(day, month, df):
         station_no = df[df["month"]==month].groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
         no_bikes = df[df["month"]==month].groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
     else:
-        date = get_date(day, month, df)
+        date = get_date(day, month, year, df)
         station_no = df[df["day"]==date].groupby("Start station number").count()["Start station"].sort_values()[-1:].index[0]
         no_bikes = df[df["day"]==date].groupby("Start station number").count()["Start station"].sort_values()[-1:].iloc[0]
     return station_no, no_bikes
