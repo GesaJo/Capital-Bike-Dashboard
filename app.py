@@ -290,7 +290,13 @@ app.layout = html.Div([
             ])
         ],className="pretty-container six columns")
 
-    ], className="basic-container")
+    ], className="basic-container"),
+
+ # sixth Row
+ html.Div([
+     html.Div([
+         dcc.Graph(id='customer-graph')])
+ ],className="pretty-container twelve columns")
 
 ],className= "general")
 
@@ -478,12 +484,12 @@ def weekday_graph(dummy):
             "y": res[7],
             "name":  res[8],
             "line": {"color": "#63A3AA"}},
-            {"x": res[9],
-            "y": res[10],
+            {"x": res[9][:23],
+            "y": res[10][:23],
             "name": res[11],
             "line": {"color": "#5176A1"}},
-            {"x": res[12],
-            "y": res[13],
+            {"x": res[12][:22],
+            "y": res[13][:22],
             "name": res[14],
             "line": {"color": "#7B74A8"}},
             {"x": res[15],
@@ -519,17 +525,17 @@ def weather_graph(weather, month, df=df):
     return {
     "data":[
         go.Scatter(
-            x = df.groupby("day").mean().index,
-            y = df.groupby("day").count()["Duration"],
-            text = df["day"],
+            x = df.groupby("day_month").mean().index,
+            y = df.groupby("day_month").count()["Duration"],
+            text = df["day_month"],
             mode="markers",
             opacity=0.7,
             marker = dict(
-                color= df.groupby("day").mean()[weather],
+                color= df.groupby("day_month").mean()[weather],
                 colorscale= colors_weather[weather],
-                size=df.groupby("day").mean()["Duration"]/5,
+                size=df.groupby("day_month").mean()["Duration"]/5,
                 sizemin=2,
-                sizeref= (max(df.groupby("day").mean()["Duration"]))/(10**2),
+                sizeref= (max(df.groupby("day_month").mean()["Duration"]))/(10**2),
                 showscale=True))],
     "layout": dict(
         xaxis={'title': 'Date'},
@@ -588,5 +594,44 @@ def weekday_graph(weather, df=df):
     }
 
 
+@app.callback(
+    Output('customer-graph', 'figure'),
+    [Input('choose-weather2', 'value')])
+def customer_graph(weather, df=df):
+    df_members = df[df["Member type"] == "Member"]
+    df_casual = df[df["Member type"] == "Casual"]
+
+
+    return {
+        "data":[{"x" : df_members.groupby(["day"]).count()["Duration"].index,
+            "y" : df_members.groupby(["day"]).count()["Duration"],
+            "name": "Members",
+            "line": {"color":"#91BCCE"}},
+            {"x": df_casual.groupby(["day"]).count()["Duration"].index,
+            "y": df_casual.groupby(["day"]).count()["Duration"],
+            "name": "Casual riders",
+            "line": {"color":"#ff7f0e"}}],
+        "layout": dict(
+            autosize=True,
+            height=500,
+            font=dict(color="#485C6E"),
+            titlefont=dict(color="#485C6E", size='14'),
+            margin=dict(l=35,r=35,b=35,t=45),
+            hovermode="closest",
+            title="Development of numbers of rides over time",
+            plot_bgcolor='#fffcfc',
+            paper_bgcolor='#fffcfc',
+            legend=dict(font=dict(size=10), orientation='h'))
+    }
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+#
+# df
+
+# df.groupby("day_month").count()["Duration"]
+#df["day_month"].unique()
+# df.groupby("hour").mean()["TAVG"]
+# df.groupby("day_month").mean().index,
