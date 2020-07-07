@@ -79,11 +79,13 @@ def day_single(day, month, year, df):
 
 def get_date(day, month, year, df):
     """Returns the given day and month into a date with type string"""
-
-    if day < 10:
-        day = "0"+ str(day)
-    if month < 10:
-        month = "0"+str(month)
+    try:
+        if day < 10:
+            day = "0"+ str(day)
+        if month < 10:
+            month = "0"+str(month)
+    except TypeError:
+        pass
     date =f"{year}-{month}-{day}"
     return date
 
