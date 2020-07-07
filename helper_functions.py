@@ -159,6 +159,7 @@ def graph_weather(weather, df):
         list_results.extend([0,0,0,0,0,0,0,0,0])
     return list_results
 
+
 def get_station(day, month, year, df):
     """Returns the number and adress of the most used station of a given year,
        month or day and the number of bikes rented at that station."""
