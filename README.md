@@ -33,6 +33,6 @@ Created using mainly pandas and dash.
 - ~~clean up and upload notebook~~
 - ~~add data (rides and weather) for 2018 and 2020~~
 - ~~add data preparation file and "how to"-section~~
-- tests
+- ~~tests~~
 - dockerize
 - host
